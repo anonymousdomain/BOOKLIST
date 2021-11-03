@@ -62,7 +62,7 @@ class UI {
 
         // make the validation disappear in 2 sec
 
-        setTimeout(()=>document.querySelector('.alert').remove(),2000);
+        setTimeout(() => document.querySelector('.alert').remove(), 2000);
     }
 }
 
@@ -90,7 +90,7 @@ document.querySelector('#book-form').addEventListener('submit',
 
             // add book to UI
             UI.addBookToList(book);
-
+            UI.showAlert('new book add', 'success')
             //clear fileds 
             UI.clearFields();
         }
@@ -102,5 +102,6 @@ document.querySelector('#book-list').addEventListener('click',
     (e) => {
 
         UI.deleteBook(e.target);
+        UI.showAlert('book is deleted from the list','danger')
     })
 
