@@ -10,21 +10,8 @@ class Book {
 //UI class:handle ui tasks 
 class UI {
     static displayBooks() {
-        const storedBooks = [
-            {
-                title: "book one",
-                author: "dawit",
-                isbn: "1234"
-            },
-            {
-                title: "book Two",
-                author: "nahom",
-                isbn: "5678"
-            }
 
-        ];
-
-        const books = storedBooks;
+        const books = Store.getBooks();
         books.forEach((book) => UI.addBookToList(book));
 
     }
@@ -68,7 +55,34 @@ class UI {
 
 
 // store class:handels a storage
+class Store {
+    static getBooks() {
+        let books;
+        if (localStorage.getItem('books') === null) {
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
 
+        return books;
+    }
+
+    static addBook(book) {
+        const books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+    static removeBook(isbn) {
+        const books = Store.getBooks();
+        books.forEach((book, index) => {
+            if (book.isbn === isbn) {
+                books.splice(index, 1);
+            }
+        });
+
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+}
 
 // event:display books
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
@@ -90,6 +104,11 @@ document.querySelector('#book-form').addEventListener('submit',
 
             // add book to UI
             UI.addBookToList(book);
+
+            // add book to localStorage
+            Store.addBook(book)
+
+            //show alert
             UI.showAlert('new book add', 'success')
             //clear fileds 
             UI.clearFields();
@@ -100,8 +119,14 @@ document.querySelector('#book-form').addEventListener('submit',
 // event remove a book
 document.querySelector('#book-list').addEventListener('click',
     (e) => {
-
+        // delete from ui 
         UI.deleteBook(e.target);
-        UI.showAlert('book is deleted from the list','danger')
+
+        //delete from local storege 
+        isbn = e.target.parentElement.previousElementSibling.textContent
+        Store.removeBook(isbn)
+
+        //show alert
+        UI.showAlert('book is deleted from the list', 'danger')
     })
 
